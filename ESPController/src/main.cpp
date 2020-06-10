@@ -641,24 +641,16 @@ void sendMqttPacket() {
   Serial1.println("Sending MQTT");
 
   char topic[80];
-  char jsonbuffer[100];
-  //char value[20];
-  //uint16_t reply;
+  char buffer[100];
 
   for (uint8_t bank = 0; bank < mysettings.totalNumberOfBanks; bank++) {
     for (uint8_t i = 0; i < numberOfModules[bank]; i++) {
-
-      StaticJsonDocument<100> doc;
-      doc["voltage"] = (float)cmi[bank][i].voltagemV/1000.0;
-      doc["inttemp"] = cmi[bank][i].internalTemp;
-      doc["exttemp"] = cmi[bank][i].externalTemp;
-      doc["bypass"] = cmi[bank][i].inBypass ? 1:0;
-      serializeJson(doc, jsonbuffer, sizeof(jsonbuffer));
+      sprintf(buffer, "%d %d %d %d", cmi[bank][i].voltagemV, cmi[bank][i].internalTemp, cmi[bank][i].externalTemp, cmi[bank][i].inBypass ? 1:0);
 
       sprintf(topic, "%s/%d/%d", mysettings.mqtt_topic, bank, i);
-      mqttClient.publish(topic, 0, false, jsonbuffer);
+      mqttClient.publish(topic, 0, false, buffer);
       Serial1.println(topic);
-      //Serial1.print(" ");      Serial1.print(jsonbuffer);      Serial1.print(" ");      Serial1.println(reply);
+      //Serial1.print(" ");      Serial1.print(buffer);      Serial1.print(" ");      Serial1.println(reply);
     }
   }
 }
