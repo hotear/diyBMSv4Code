@@ -81,7 +81,11 @@ void PacketReceiveProcessor::ProcessReplyAddressByte() {
   // reserved and not used
   // AAAA = 4 bits for address (module id 0 to 15)
 
-
+  // Have a situation where a bank loses a module for one reply causing
+  // voltage min and max to be reset below.  Keep a count of when this
+  // loss of module happens and until it's been gone for more than 1
+  // turn, ignore it as the module will probably come back.
+  static uint8_t changedCount = 0;
   uint8_t broadcast = (_packetbuffer.address & B10000000) >> 7;
   // uint8_t bank=(_packetbuffer.address & B00110000) >> 4;
   // uint8_t lastAddress=_packetbuffer.address & 0x0F;
@@ -90,17 +94,23 @@ void PacketReceiveProcessor::ProcessReplyAddressByte() {
   if (broadcast > 0) {
     if (numberOfModules[ReplyFromBank()] != ReplyLastAddress()) {
 
+      // Keep track that the number of modules didn't match.
+      ++changedCount;
       //Serial1.println("Reset bank values");
+      // If it hasn't matched for more than 1 go, do the reset as before
+      // and reset the counter.
+      if (changedCount > 1) {
+        changedCount = 0;
+        numberOfModules[ReplyFromBank()] = ReplyLastAddress();
 
-      numberOfModules[ReplyFromBank()] = ReplyLastAddress();
-
-      // if we have a different number of modules in this bank
-      // we should clear all the cached config flags from the modules
-      // as they have probably moved address
-      for (size_t i = 0; i < maximum_cell_modules; i++) {
-        cmi[ReplyFromBank()][i].settingsCached = false;
-        cmi[ReplyFromBank()][i].voltagemVMin = 6000;
-        cmi[ReplyFromBank()][i].voltagemVMax = 0;
+        // if we have a different number of modules in this bank
+        // we should clear all the cached config flags from the modules
+        // as they have probably moved address
+        for (size_t i = 0; i < maximum_cell_modules; i++) {
+          cmi[ReplyFromBank()][i].settingsCached = false;
+          cmi[ReplyFromBank()][i].voltagemVMin = 6000;
+          cmi[ReplyFromBank()][i].voltagemVMax = 0;
+        }
       }
     }
   }
