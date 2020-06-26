@@ -581,7 +581,7 @@ function queryBMS() {
 
         var labelOption3 = {
             normal: {
-                show: true,
+                show: false,
                 position: 'top',
                 distance:5,
                 formatter: '{c}V',
@@ -591,7 +591,7 @@ function queryBMS() {
 
         var labelOption4 = {
             normal: {
-                show: true,
+                show: false,
                 position: 'bottom',
                 distance:5,
                 formatter: '{c}V',
@@ -600,18 +600,19 @@ function queryBMS() {
         };
 
 
-            var labelOption2 = {
-                  normal: {
-                      show: true,
-                      position: 'insideBottom',
-                      distance: 15,
-                      align: 'left',
-                      verticalAlign: 'middle',
-                      rotate: 90,
-                      formatter: '{c}°C',
-                      fontSize: 22
-                  }
-              };
+        var labelOption2 = {
+              normal: {
+                  show: true,
+                  position: 'insideBottom',
+                  distance: 15,
+                  align: 'left',
+                  verticalAlign: 'middle',
+                  rotate: 90,
+                  formatter: '{c}°C',
+                  fontSize: 22
+            }
+        };
+
         // specify chart configuration item and data
         var option = {
           color: ['#003366', '#006699', '#4cabce'],
