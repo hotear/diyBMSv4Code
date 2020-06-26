@@ -640,24 +640,23 @@ void sendMqttPacket() {
 
   Serial1.println("Sending MQTT");
 
+  static uint8_t bank = 0;
   char topic[80];
   char buffer[100];
 
-  for (uint8_t bank = 0; bank < mysettings.totalNumberOfBanks; bank++) {
-    for (uint8_t i = 0; i < numberOfModules[bank]; i++) {
-      sprintf(buffer, "%d %d %d %d", cmi[bank][i].voltagemV, cmi[bank][i].internalTemp, cmi[bank][i].externalTemp, cmi[bank][i].inBypass ? 1:0);
-
-      sprintf(topic, "%s/%d/%d", mysettings.mqtt_topic, bank, i);
-      mqttClient.publish(topic, 0, false, buffer);
-      Serial1.println(topic);
-      //Serial1.print(" ");      Serial1.print(buffer);      Serial1.print(" ");      Serial1.println(reply);
-    }
+  for (uint8_t i = 0; i < numberOfModules[bank]; i++) {
+    sprintf(topic, "%s/%d/%d", mysettings.mqtt_topic, bank, i);
+    sprintf(buffer, "%d %d %d %d", cmi[bank][i].voltagemV, cmi[bank][i].internalTemp, cmi[bank][i].externalTemp, cmi[bank][i].inBypass ? 1:0);
+    mqttClient.publish(topic, 0, false, buffer);
+    Serial1.println(topic);
+    //Serial1.print(" ");      Serial1.print(buffer);      Serial1.print(" ");      Serial1.println(reply);
   }
+  bank = ((bank + 1) % mysettings.totalNumberOfBanks);
 }
 
 void onMqttConnect(bool sessionPresent) {
   Serial1.println("Connected to MQTT.");
-  myTimerSendMqttPacket.attach(30, sendMqttPacket);
+  myTimerSendMqttPacket.attach(10, sendMqttPacket);
 }
 
 void LoadConfiguration() {
