@@ -99,7 +99,7 @@ void PacketReceiveProcessor::ProcessReplyAddressByte() {
       //Serial1.println("Reset bank values");
       // If it hasn't matched for more than 1 go, do the reset as before
       // and reset the counter.
-      if (changedCount > 1) {
+      if (changedCount > 2) {
         changedCount = 0;
         numberOfModules[ReplyFromBank()] = ReplyLastAddress();
 
