@@ -142,7 +142,9 @@ bool PacketProcessor::onPacketReceived(const uint8_t* receivebuffer, size_t len)
     //Calculate the CRC and compare to received
     uint16_t validateCRC = CRC16::CalculateArray((unsigned char*)&buffer, sizeof(buffer) - 2);
 
-    if (validateCRC == buffer.crc) {
+    if ((validateCRC == buffer.crc) &&
+        ((buffer.address & 0x0F) < 14) && // If 14 or 15 this is a bad packet, mine is a 14s
+        ((buffer.command & 0x0F) <= COMMAND::WriteSettings)) { // If command doesn't exist it's a bad packet
       //It's a good packet
       if (isPacketForMe()) {
         if (processPacket()) {
@@ -187,7 +189,7 @@ uint16_t PacketProcessor::RawADCValue() {
 
 // Process the request in the received packet
 //command byte
-// RRRR CCCC
+// XRRR CCCC
 // X    = 1 bit indicate if packet processed
 // R    = 3 bits reserved not used
 // C    = 4 bits command (16 possible commands)
@@ -235,7 +237,7 @@ bool PacketProcessor::processPacket() {
       //Indicate that we received and did something
       buffer.moduledata[mymoduleaddress] = 0xFFFF;
 
-      //For the next 10 receied packets - keep the LEDs lit up
+      //For the next 10 received packets - keep the LEDs lit up
       identifyModule = 10;
       return true;
     }

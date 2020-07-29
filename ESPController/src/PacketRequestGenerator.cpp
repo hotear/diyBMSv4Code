@@ -173,7 +173,7 @@ void PacketRequestGenerator::setPacketAddress(bool broadcast,uint8_t bank,uint8_
 
 void PacketRequestGenerator::clearmoduledata() {
   //todo replace with memset/memclr
-  for ( int a = 0; a < maximum_cell_modules; a++ ) {
+  for ( int8_t a = 0; a < maximum_cell_modules; a++ ) {
     _packetbuffer.moduledata[a] = 0;
   }
 }
