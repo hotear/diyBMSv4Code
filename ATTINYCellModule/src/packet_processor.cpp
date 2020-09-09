@@ -142,9 +142,7 @@ bool PacketProcessor::onPacketReceived(const uint8_t* receivebuffer, size_t len)
     //Calculate the CRC and compare to received
     uint16_t validateCRC = CRC16::CalculateArray((unsigned char*)&buffer, sizeof(buffer) - 2);
 
-    if ((validateCRC == buffer.crc) &&
-        ((buffer.address & 0x0F) < 14) && // If 14 or 15 this is a bad packet, mine is a 14s
-        ((buffer.command & 0x0F) <= COMMAND::WriteSettings)) { // If command doesn't exist it's a bad packet
+    if (validateCRC == buffer.crc) {
       //It's a good packet
       if (isPacketForMe()) {
         if (processPacket()) {
