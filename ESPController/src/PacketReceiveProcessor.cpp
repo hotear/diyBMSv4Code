@@ -89,11 +89,6 @@ void PacketReceiveProcessor::ProcessReplyAddressByte() {
   // reserved and not used
   // AAAA = 4 bits for address (module id 0 to 15)
 
-  // Have a situation where a bank loses a module for one reply causing
-  // voltage min and max to be reset below.  Keep a count of when this
-  // loss of module happens and until it's been gone for more than 1
-  // turn, ignore it as the module will probably come back.
-  static uint8_t changedCount = 0;
   uint8_t broadcast = (_packetbuffer.address & B10000000) >> 7;
   // uint8_t bank=(_packetbuffer.address & B00110000) >> 4;
   // uint8_t lastAddress=_packetbuffer.address & 0x0F;
