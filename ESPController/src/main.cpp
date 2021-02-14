@@ -1071,9 +1071,9 @@ void LoadConfiguration()
   mysettings.totalNumberOfBanks = 1;
   mysettings.totalNumberOfSeriesModules = 1;
   mysettings.BypassOverTempShutdown = 65;
-  //4.10V bypass
-  mysettings.BypassThresholdmV = 4100;
-  mysettings.graph_voltagehigh = 4.5;
+  //4.05V bypass
+  mysettings.BypassThresholdmV = 4050;
+  mysettings.graph_voltagehigh = 4.2;
   mysettings.graph_voltagelow = 2.75;
 
   //EEPROM settings are invalid so default configuration
